@@ -10,3 +10,12 @@ Create a medical app backend with the following capabilities:
 7. Provide detailed and understandable documentation for the backend API, detailing each endpoint's requirements for request payloads and expected responses.
  ---
 Patients can upload and manage their medical reports using this straightforward medical app, view automated analytics, and communicate with doctors. Doctors have access to patient profiles, can look over reports, and can offer medical guidance or care. Deep learning or AI models are used in the backend to analyze reports and produce insights. Once the core functionalities are implemented, additional features like appointment scheduling, chat functionality, or notifications can be added as upgrades.
+
+---
+
+## Implementation
+
+1. Using MVC file structure methods
+2. Installing Require Packages for projects
+3. Server & Database Comnnection
+4. Creating Login and Registration routes
