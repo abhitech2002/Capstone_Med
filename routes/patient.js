@@ -1,107 +1,113 @@
-// Importing Required modules
-const router = require("express").Router();
-const patient = require('../models/patient')
+const express = require('express')
+const Patient = require('../models/patient')
+const { default: mongoose } = require('mongoose')
+const patientRouter = express.Router()
 
-// Routes of patient
-// Get All /patients
+// Creating a patient 
+patientRouter.post('/', (req, res) => {
+    const {name, age, gender, phone, address, preIllness} = req.body
 
-router.get('/', (req, res) => {
-    patient.find({}) // find method to get the data
-        .then((patients) => res
-            .status(200)
-            .json({
-                message: "Patient Fetch Successfully."
-            })
-        )
-        .catch((error) => res
-            .status(422)
-            .json({
-                message: 'Patient fetch failed'
-            })
-        )
-})
+    const newPatient = new Patient({
+        name, age, gender, phone, address, preIllness
+    })
 
-// post /patients
-router.post('/', (req, res) => {
-    const { body } = req 
-    const newPatients = new patient({ $set: body })
-
-    newPatients.save()
-        .then((patients) =>
+    newPatient.save()
+        .then((patient) => {
             res.status(201).json({
-                message: "Patients Created Successfully",
-                data: patients
+                message: 'Patient Crated Successfully.',
+                data: patient
             })
-        )
-        .catch((error) =>
-            res.status(422).json({
-                message: "patients Creation failed",
+        })
+        .catch((error) => {
+            // console.log(error)
+            res.status(500).json({
+                message: "Patient Creation failed.",
                 data: {},
-                error: error.message ? error.message : error.toString()
+                error: error.message ? error.message : error.toString(),
             })
-        )
+        })
 })
 
-// Put /patients/:id
-router.put('/:id', (req, res) => {
-    const { id } = req.params
-    const { body } = req
 
-    patient.findByIdAndUpdate(id, { $set: body }, { new: true })
-        .then((patients) => {
-            if (!patients) {
+// Getting all patient
+patientRouter.get('/', (req, res) => {
+    Patient.find()
+        .then((patient) => {
+            res.status(200).json({
+                message: "Patient data fetch successfully.",
+                data: patient
+            })
+        })
+        .catch((error) => {
+            res.status(500).json({
+                message: "Patient Data Fetching failed",
+                data: {},
+                error: error.message ? error.message : error.toString(),
+            })
+        })
+})
+
+// Updating a Patient data
+patientRouter.put('/:id', (req, res) => {
+    const patientId = req.params.id
+    const {name, age, gender, phone, address, preIllness} = req.body
+
+    // Checking if the patientId is valid objectId
+    if(!mongoose.Types.ObjectId.isValid(patientId)){
+        return res.status(400).json({
+            error: 'Invalid patient ID' 
+        })
+    }
+
+    Patient.findByIdAndUpdate(patientId, {
+        name, age, gender, phone, address, preIllness
+    },{new: true})
+        .then((patient) => {
+            if(patient){
                 return res.status(404).json({
-                    message: "Patient Not found",
+                    message: "Patient Not Found"
+                })
+            }
+            res.status(200).json({
+                message: "Patient updated successfully",
+                data: patient,
+            })
+        })
+        .catch((error) => {
+            res.status(500).json({
+                message: 'Updation Failed',
+                data: {},
+                error: error.message ? error.message : error.toString(),
+
+            })
+        })
+})
+
+// Deleting a patient
+patientRouter.delete('/:id', (req, res) => {
+    const patientId = req.params.id
+
+    Patient.findByIdAndDelete(patientId)
+        .then((patient) => {
+            if(!patient){
+                return res.status(404).json({
+                    message: "Patient Not Found",
                     data: {},
                     error: error.message ? error.message : error.toString(),
                 })
             }
-            else {
-                return res.status(201)
-                    .json({
-                        message: "Patients data updated Successfully",
-                        data: patients
-                    })
-            }
+            res.status(200).json({
+                message: "Patient Deleted Successfully",
+                data: patient
+            })
         })
-        .catch((error) => res
-            .status(422)
-            .json({
-                message: "Post updation failed.",
+        .catch((error) => { 
+            res.status(500).json({
+                message: "Patient Deletion failed",
                 data: {},
                 error: error.message ? error.message : error.toString(),
             })
-        )
-})
-
-router.delete('/:id', (req, res) => {
-    const { id } = req.params
-    patient.findByIdAndDelete(id)
-        .then((patients) => {
-            if (!patients) {
-                return res.status(404).json({
-                    message: "Patient Not found",
-                    data: {},
-                    error: error.message ? error.message : error.toString(),
-                })
-            }
-            else {
-                res
-                    .status(200)
-                    .json({
-                        message: "Patients deleted Successfully",
-                        data: patients
-                    })
-            }
         })
-        .catch((error) => res
-            .status(200)
-            .json({
-                message: 'Patients deletion failed',
-                data: {},
-                error: error.message ? error.message : error.toString(),
-            })
-        )
 })
 
-module.exports = router
+module.exports = patientRouter

@@ -1,31 +1,33 @@
-// Importing Expresss
-const express =  require('express')
-const connectDB = require('./config/connection')
-const moragan = require("morgan")
-const dotenv = require("dotenv")
+const express = require('express')
+const dotenv = require('dotenv')
+const bodyParser = require('body-parser')
+const connectToDatabase = require('./config/db')
+const authRoute = require('./routes/auth')
+const patientRouter = require('./routes/patient')
+const physicianRouter = require('./routes/physician')
 
-// dotenv Config
 dotenv.config()
 
-// MongoDB Connection 
-connectDB()
-
-// Initialization express
+// Initialization
 const app = express()
+
+// connect to database
+connectToDatabase()
 
 // Middleware
 app.use(express.json())
-app.use(moragan('dev'))
-
-// port using env 
-const port = process.env.PORT || 8080
+app.use(bodyParser.urlencoded({extended: true}))
 
 
-
-app.get('/',(req, res)=>{
-     res.send("Hello Med App User...")
+app.get('/greet', (req, res) => {
+    res.send("Greeting Medical App users..")
 })
 
-app.listen(port, () => {
-    console.log(`server Running in ${process.env.NODE_MODE} mode on port ${process.env.PORT}`)
+// Routes
+app.use('/users', authRoute)
+app.use('/patient', patientRouter)
+app.use('/physician', physicianRouter)
+
+app.listen(3000, () => {
+    console.log('Server is running at port number 3000')
 })

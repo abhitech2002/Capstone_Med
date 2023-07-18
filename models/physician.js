@@ -1,36 +1,26 @@
 const mongoose = require('mongoose')
 
-// Schema for Physician
-const physicainSchema = new mongoose.Schema({
-
+const physicianSchema = new mongoose.Schema({
     name:{
-        type: String,
-        required: [true,"Name is Required."]
+        type:String,
+        required: true,
     },
-    gender:{
+    specialization: {
         type: String,
-        required: [true, 'Gender is Required.']
-    },
-    age:{
-        type: Number,
-        required: [true, "Age is required."]
-    }, 
-    address: {
-        type: String,
-        required: [true, 'Address is required.']
+        required: true,
     },
     phone:{
         type: Number,
-        required: [true, 'Phone Number is required.']
+        required: true
     },
-    specialization:{
+    email: {
         type: String,
-        required: [true, 'Specialization of Physician is required.']
-    },
-    timing:{
-        type:Object,
-        required: [true, 'work timing is required']
-    }   
-},{timestamps:true})
+        required: true
+    }, 
+    address:{
+        type: String,
+        required: true
+    }
+},{timestamps: true})
 
-module.exports = mongoose.model('Physician', physicainSchema)
+module.exports = mongoose.model('Physician', physicianSchema)

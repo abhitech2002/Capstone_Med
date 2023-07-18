@@ -1,32 +1,31 @@
 const mongoose = require('mongoose')
 
-
-// Schema for patient 
+// Creating Schema fo Patient
 const patientSchema = new mongoose.Schema({
     name:{
         type: String,
-        required: [true,"Name is Required."]
-    },
-    gender:{
-        type: String,
-        required: [true, 'Gender is Required.']
+        required: true
     },
     age:{
         type: Number,
-        required: [true, "Age is required."]
-    }, 
+        required: true
+    },
+    gender:{
+        type: String,
+        required: true
+    },
+    phone: {
+        type: String,
+        required: true
+    },
     address: {
         type: String,
-        required: [true, 'Address is required.']
+        required:true
     },
-    phone:{
-        type: Number,
-        required: [true, 'Phone Number is required.']
-    },
-    pre_illness:{
+    preIllness: {
         type: String,
-        required:[true, 'Previous illness record required.']
+        required: true
     }
-})
+},{timestamps: true})
 
 module.exports = mongoose.model('Patient', patientSchema)
