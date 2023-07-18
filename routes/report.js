@@ -5,30 +5,68 @@ const Report = require('../models/report')
 const reportRouter = express.Router()
 
 // Set up Multer for file uploads
+// const storage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//       cb(null, '/public');
+//     },
+//     filename: (req, file, cb) => {
+//       cb(null, file.originalname);
+//     }
+// });
 
+// const upload = multer({ storage });
 
+// Storage
+const Storage = multer.diskStorage({
+    destination: 'uploads',
+    filename:(req, file, cb) => {
+        cb(null, file.originalname)
+    }
+})
+
+const upload = multer({
+    storage: Storage
+}).single('reportImage')
 
 // create a report
 reportRouter.post('/', (req, res) => {
-    const { title, description } = req.body;
+    // const { title, description } = req.body;
+
+    upload(req, res, (err) => {
+        if(err){
+            console.log(err)
+        }
+        else{
+            const newImage = new Report({
+                title: req.body.title,
+                description: req.body.description,
+                images:{
+                    data: req.file.filename,
+                    contentType: 'image/png'
+                }
+            })
+            newImage.save()
+                .then((report) => {
+                    res.status(201).json({
+                        data: report
+                    });
+                })
+                .catch((error) => {
+                    res.status(500).json({ 
+                        error: error.message 
+                    });
+                });
+        }
+    })
   
     // const images = req.files ? req.files.map(file => file.filename) : [];
     // const pdf = req.file ? req.file.filename : '';
   
-    const newReport = new Report({
-      title, description,
-    });
-    newReport.save()
-        .then((report) => {
-            res.status(201).json({
-                data: report
-            });
-        })
-        .catch((error) => {
-            res.status(500).json({ 
-                error: error.message 
-            });
-        });
+    // const newReport = new Report({
+    //   title, description, images, pdf
+    // });
+    // newReport.save()
+        
 
 })
 

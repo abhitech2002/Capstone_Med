@@ -9,12 +9,13 @@ const reportSchema = new mongoose.Schema({
       type: String,
       required: true
     },
-    // images: {
-    //   type: String
-    // },
+    images: {
+      data: Buffer,
+      contentType: String
+    },
     // pdf: {
     //   type: String
     // }
   },{timestamps: true});
   
-  module.exports = mongoose.model('Report', reportSchema);
+  module.exports = Report = mongoose.model('Report', reportSchema);

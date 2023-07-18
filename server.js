@@ -29,7 +29,7 @@ app.get('/greet', (req, res) => {
 app.use('/users',  authRoute)
 app.use('/patient', isAuthenticated, patientRouter)
 app.use('/physician', isAuthenticated, physicianRouter)
-app.use('/report', isAuthenticated, reportRouter)
+app.use('/report', reportRouter)
 
 app.listen(3000, () => {
     console.log('Server is running at port number 3000')
