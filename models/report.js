@@ -14,7 +14,8 @@ const reportSchema = new mongoose.Schema({
       contentType: String
     },
     // pdf: {
-    //   type: String
+    //   data: Buffer,
+    //   contentType: String
     // }
   },{timestamps: true});
   
