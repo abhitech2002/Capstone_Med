@@ -5,7 +5,7 @@ const physicianRouter = express.Router()
 
 // creating a physician
 physicianRouter.post('/', (req, res) => {
-    const {name, specialization, phone, email, address} = req.body
+    const { name, specialization, phone, email, address } = req.body
 
     const newPhysician = new Physician({
         name, specialization, phone, email, address
@@ -31,7 +31,7 @@ physicianRouter.post('/', (req, res) => {
 physicianRouter.get('/', (req, res) => {
     Physician.find()
         .then((physician) => {
-            if(!physician){
+            if (!physician) {
                 return res.status(404).json({
                     message: "Physician Not Found.",
                     data: {},
@@ -39,7 +39,7 @@ physicianRouter.get('/', (req, res) => {
                 })
             }
             res.status(200).json({
-                message:"Physician Data Fetch Successfully.",
+                message: "Physician Data Fetch Successfully.",
                 data: physician,
             })
         })
@@ -47,7 +47,7 @@ physicianRouter.get('/', (req, res) => {
             res.status(500).json({
                 message: "Physician Fetching Failed.",
                 data: {},
-                error: error.message 
+                error: error.message
             })
         })
 })
@@ -58,10 +58,10 @@ physicianRouter.put('/:id', (req, res) => {
     const { name, specialization, phone, email, address } = req.body;
 
     Physician.findByIdAndUpdate(physicianId, {
-        name, specialization , phone, email, address
+        name, specialization, phone, email, address
     }, { new: true })
-        .then((physician)=>{
-            if(!physician){
+        .then((physician) => {
+            if (!physician) {
                 return res.status(404).json({
                     message: "Physician Not Found.",
                     data: {},
@@ -69,15 +69,15 @@ physicianRouter.put('/:id', (req, res) => {
                 })
             }
             res.status(200).json({
-                message:"Physician Updation Successfully.",
+                message: "Physician Updation Successfully.",
                 data: physician,
             })
         })
-        .catch((error)=>{
+        .catch((error) => {
             res.status(500).json({
                 message: "Physician Updation Failed.",
                 data: {},
-                error: error.message 
+                error: error.message
             })
         })
 })
@@ -88,7 +88,7 @@ physicianRouter.delete('/:id', (req, res) => {
 
     Physician.findByIdAndDelete(physicianId)
         .then((physician) => {
-            if(!physician){
+            if (!physician) {
                 return res.status(404).json({
                     message: "Physician Not Found.",
                     data: {},
@@ -96,17 +96,33 @@ physicianRouter.delete('/:id', (req, res) => {
                 })
             }
             res.status(200).json({
-                message:"Physician Deletion Successfully.",
+                message: "Physician Deletion Successfully.",
                 data: physician,
             })
         })
-        .catch((error)=>{
+        .catch((error) => {
             res.status(500).json({
                 message: "Physician Deletion Failed.",
                 data: {},
-                error: error.message 
+                error: error.message
             })
         })
 })
+
+// Getting single physician data
+physicianRouter.get('/:id', (req, res) => {
+    const physicianId = req.params.id;
+
+    Physician.findById(physicianId)
+        .then((physician) => {
+            if (!physician) {
+                return res.status(404).json({ error: 'Physician not found' });
+            }
+            res.status(200).json({ message: "Data fetch Successfuuly.", data: physician });
+        })
+        .catch((error) => {
+            res.status(500).json({ message: "Data fetch failed.", error: error.message });
+        });
+});
 
 module.exports = physicianRouter

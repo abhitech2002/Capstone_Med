@@ -68,13 +68,13 @@ reportRouter.get('/', (req, res) => {
   Report.find()
     .then((reports) => {
       res.status(200).json({
-        message:"Report Fetched Successfully.",
+        message: "Report Fetched Successfully.",
         data: reports
       });
     })
     .catch((error) => {
       res.status(500).json({
-        message:"Report Fetched failed.",
+        message: "Report Fetched failed.",
         data: {},
         error: error.message
       });
@@ -93,14 +93,14 @@ reportRouter.put('/:id', (req, res) => {
   }, { new: true })
     .then((report) => {
       if (!report) {
-        return res.status(404).json({ 
+        return res.status(404).json({
           data: {},
-          error: 'Report not found' 
+          error: 'Report not found'
         });
       }
-      res.status(200).json({ 
+      res.status(200).json({
         message: "Report Updated Successfully",
-        data: report 
+        data: report
       });
     })
     .catch((error) => {
@@ -121,6 +121,22 @@ reportRouter.delete('/:id', (req, res) => {
     })
     .catch((error) => {
       res.status(500).json({ error: error.message });
+    });
+});
+
+// Getting single data
+reportRouter.get('/:id', (req, res) => {
+  const reportId = req.params.id;
+
+  Report.findById(reportId)
+    .then((report) => {
+      if (!report) {
+        return res.status(404).json({ error: 'Report not found' });
+      }
+      res.status(200).json({ message: "Successfully Fetch", data: report });
+    })
+    .catch((error) => {
+      res.status(500).json({ message: "Successfully Fetch", error: error.message });
     });
 });
 
